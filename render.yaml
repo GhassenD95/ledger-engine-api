@@ -1,0 +1,36 @@
+services:
+  - type: web
+    name: ledger-engine
+    runtime: image
+    repo: https://github.com/GhassenD95/ledger-engine-api
+    plan: free
+    dockerfilePath: Dockerfile
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: render
+      - key: SERVER_PORT
+        value: 8081
+      - key: SPRING_DATASOURCE_URL
+        fromDatabase:
+          name: ledger-db
+          property: connectionString
+      - key: SPRING_DATASOURCE_USERNAME
+        fromDatabase:
+          name: ledger-db
+          property: user
+      - key: SPRING_DATASOURCE_PASSWORD
+        fromDatabase:
+          name: ledger-db
+          property: password
+      - key: SPRING_RABBITMQ_HOST
+        value: ""  # optional — app works without it
+      - key: SPRING_DATA_REDIS_HOST
+        value: ""  # optional — app works without it
+    healthCheckPath: /actuator/health
+
+databases:
+  - name: ledger-db
+    plan: free
+    region: frankfurt
+    databaseName: ledger_db
+    ipAllowList: []
