@@ -10,24 +10,24 @@ Built with Java 17 + Spring Boot 3, backed by PostgreSQL, cached with Redis, and
 
 ```mermaid
 graph TB
-    Client[Client / Frontend] -->|POST /api/v1/transfers| Controller[TransferController]
-    Client -->|GET /api/v1/accounts| AccountCtrl[AccountController]
-    Client -->|GET /api/v1/transactions/:refId| JournalCtrl[JournalController]
+    Client["Client / Frontend"] -->|POST /api/v1/transfers| Controller["TransferController"]
+    Client -->|GET /api/v1/accounts| AccountCtrl["AccountController"]
+    Client -->|GET /api/v1/transactions/:refId| JournalCtrl["JournalController"]
 
-    Controller --> Service[TransferService]
-    Service --> Guard[IdempotencyGuard<br/>Redis cache]
-    Service --> Lock[AccountLockHelper<br/>SELECT ... FOR UPDATE]
-    Service --> Repos[(PostgreSQL<br/>Journal + Entries)]
-    Service --> Outbox[OutboxPublisherHelper<br/>INSERT outbox event]
+    Controller --> Service["TransferService"]
+    Service --> Guard["IdempotencyGuard (Redis)"]
+    Service --> Lock["AccountLockHelper (SELECT ... FOR UPDATE)"]
+    Service --> Repos[("PostgreSQL (Journal + Entries)")]
+    Service --> Outbox["OutboxPublisherHelper (INSERT outbox event)"]
 
-    Outbox --> OutboxRepo[(PostgreSQL<br/>transaction_outbox)]
-    OutboxRepo --> Scheduler[OutboxScheduler<br/>@Scheduled every 3s]
+    Outbox --> OutboxRepo[("PostgreSQL (transaction_outbox)")]
+    OutboxRepo --> Scheduler["OutboxScheduler (@Scheduled every 3s)"]
     Scheduler -->|FOR UPDATE SKIP LOCKED| OutboxRepo
-    Scheduler -->|publish| RabbitMQ[(RabbitMQ<br/>Topic Exchange)]
-    RabbitMQ --> Consumer[TransferEventConsumer<br/>@RabbitListener]
+    Scheduler -->|publish| RabbitMQ[("RabbitMQ (Topic Exchange)")]
+    RabbitMQ --> Consumer["TransferEventConsumer (@RabbitListener)"]
 
-    AccountCtrl --> AccountRepo[(PostgreSQL<br/>accounts)]
-    JournalCtrl --> JournalRepo[(PostgreSQL<br/>journal_entries)]
+    AccountCtrl --> AccountRepo[("PostgreSQL (accounts)")]
+    JournalCtrl --> JournalRepo[("PostgreSQL (journal_entries)")]
 
     style Client fill:#e1f5fe,stroke:#01579b
     style Controller fill:#fff3e0,stroke:#e65100
