@@ -1,7 +1,6 @@
 services:
   - type: web
     name: ledger-engine
-    runtime: image
     repo: https://github.com/GhassenD95/ledger-engine-api
     plan: free
     dockerfilePath: Dockerfile
