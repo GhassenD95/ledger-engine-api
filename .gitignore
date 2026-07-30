@@ -35,8 +35,9 @@ build/
 ### Environment ###
 .env
 
-# Frontend (separate repo)
-frontend/
+# Frontend
+frontend/dist/
+frontend/node_modules/
 
 # OpenCode config (local MCP keys)
 opencode.jsonc
