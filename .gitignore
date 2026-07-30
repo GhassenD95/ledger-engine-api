@@ -37,3 +37,6 @@ build/
 
 # Frontend (separate repo)
 frontend/
+
+# OpenCode config (local MCP keys)
+opencode.jsonc
